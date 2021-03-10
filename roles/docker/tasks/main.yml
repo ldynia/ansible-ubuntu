@@ -1,0 +1,98 @@
+- name: "Create docker directory"
+  file: path=/etc/docker state=directory mode=0700
+
+- name: "Copy files"
+  copy: src={{ item.src }} dest={{ item.dest }} owner=root group=root mode=0644
+  with_items:
+    - { src: 'files/etc/docker/daemon.json', dest: '/etc/docker/daemon.json' }
+
+- name: "Add Repo"
+  get_url:
+    url: https://download.docker.com/linux/centos/docker-ce.repo
+    dest: /etc/yum.repos.d/docer-ce.repo
+
+- name: "Enable Edge Repo"
+  ini_file:
+    dest: /etc/yum.repos.d/docer-ce.repo
+    section: 'docker-ce-edge'
+    option: enabled
+    value: 0
+
+- name: "Install Dependencies"
+  yum:
+    name:
+      - lvm2
+      - yum-utils
+      - device-mapper-persistent-data
+    state: latest
+
+# - name: "Remove docker"
+#   yum:
+#     name:
+#       - docker-ce
+#       - docker-ce-cli
+#       - containerd.io
+#     state: removed
+
+- name: "Install Docker"
+  yum:
+    name:
+      - docker-ce-{{ docker_version }}
+      - containerd.io-{{ containerd_version }}
+    state: installed
+    disable_excludes: main
+
+- name: "Add User vagrant To docker Group"
+  user:
+    name: vagrant
+    groups: docker
+    append: yes
+  when: deployment == "development"
+
+- name: "Install Composer"
+  get_url:
+    url: https://github.com/docker/compose/releases/download/1.23.2/docker-compose-Linux-x86_64
+    dest: /usr/local/bin/docker-compose
+    force: yes
+    mode: 0755
+
+- name: "Install Auto-complete"
+  get_url:
+    url: https://raw.githubusercontent.com/docker/docker-ce/master/components/cli/contrib/completion/bash/docker
+    dest: /etc/bash_completion.d/docker.sh
+    force: yes
+    mode: 0755
+
+- name: "Enable Docker Ports for and Docker Swarm"
+  firewalld:
+    port: "{{ item.port }}/{{ item.type }}"
+    permanent: true
+    state: enabled
+  with_items:
+    # Docker TLS link: https://docs.docker.com/engine/security/https/#secure-by-default
+    - { port: 2376, type: tcp }
+    - { port: 2377, type: tcp }
+    # Swarm ports link: https://docs.docker.com/engine/swarm/ingress/
+    - { port: 7946, type: tcp }
+    - { port: 7946, type: udp }
+    - { port: 4789, type: udp }
+  when: deployment == "development"
+
+- name: "Restart Firewall Service"
+  service:
+    name: firewalld
+    state: reloaded
+    enabled: yes
+  when: deployment == "development"
+
+- name: Enable docker service and ensure it is not masked
+  systemd:
+    name: docker
+    enabled: yes
+    masked: no
+
+- name: "Start Docker Service"
+  service:
+    name: docker
+    state: started
+    enabled: yes

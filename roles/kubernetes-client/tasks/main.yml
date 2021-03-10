@@ -1,0 +1,17 @@
+- name: "Download kubectl"
+  get_url:
+    url: https://storage.googleapis.com/kubernetes-release/release/{{ kubectl_version }}/bin/linux/amd64/kubectl
+    dest: /usr/bin
+    mode: 0555
+
+- name: "Make .kube directory"
+  file:
+    path: /home/vagrant/.kube
+    state: directory
+    mode: '0755'
+    owner: vagrant
+    group: vagrant
+  
+#  TODO: Fix perrmissions error for now copy file manualy
+- name: Copy /etc/kubernetes/admin.conf file
+  shell: scp vagrant@master:/home/vagrant/.kube/config /home/vagrant/.kube/config

@@ -1,0 +1,28 @@
+# - name: Copy config files
+#   copy: src={{ item.src }} dest={{ item.dest }} owner=root group=root mode=0644
+#   with_items:
+#     - { src: 'files/.bashrc', dest: '~/.bashrc' }
+#     - { src: 'files/.bashrc', dest: '~/.bashrc' }
+#     - { src: 'files/etc/yum.conf', dest: '/etc/yum.conf' }
+#     - { src: 'files/etc/resolv.conf', dest: '/etc/resolv.conf' }
+#     - { src: 'files/.bash_aliases', dest: '/etc/profile.d/00-aliases.sh' }
+
+# - name: Enable EPEL Repository
+#   yum: pkg=epel-release state=installed
+
+# - name: Upgrade all packages, beside excluded ones
+#   yum:
+#     name: '*'
+#     state: latest
+#     exclude: kernel*, docker*, kubernetes*
+
+- name: Install Packages
+  apt: pkg={{ item.packages }} state=present
+  with_items:
+    - packages:
+        - bash-completion
+        - git
+        - htop
+        - mc
+        - tig
+        - vim

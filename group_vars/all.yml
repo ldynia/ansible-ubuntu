@@ -1,0 +1,9 @@
+---
+
+# docker
+docker_version: 19.03.5-3.el7
+containerd_version: 1.2.10-3.2.el7
+
+# kubernetes
+kubectl_version: v1.18.0
+
