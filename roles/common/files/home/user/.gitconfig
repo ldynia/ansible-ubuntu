@@ -1,0 +1,9 @@
+[user]
+	name = ldynia
+	email = change@me.com
+[alias]
+	update = !git pull --rebase && git submodule update --init --recursive
+[pull]
+	rebase = true
+[core]
+	editor = vim
