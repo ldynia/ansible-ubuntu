@@ -1,9 +1,7 @@
 ---
 
-# docker
-docker_version: 19.03.5-3.el7
-containerd_version: 1.2.10-3.2.el7
+# OS
+OS_DISTRO_RELEASE: focal
 
 # kubernetes
-kubectl_version: v1.18.0
-
+KUBECTL_VERSION: v1.20.4
