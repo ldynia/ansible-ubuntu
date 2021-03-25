@@ -48,6 +48,7 @@
         - tig
         - vim
         - virtualbox
+        - wireshark
 
 - name: Install Snap Packages
   snap: name={{ item.names }} state=present
