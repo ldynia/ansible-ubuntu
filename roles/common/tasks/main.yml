@@ -1,8 +1,29 @@
-- name: Ensuring Ubuntu multiverse repo is enabled
+- name: Add hashicorp GPG key
+  ansible.builtin.apt_key:
+    url: https://apt.releases.hashicorp.com/gpg
+    keyring: /etc/apt/trusted.gpg.d/hashicorp.gpg
+
+- name: Add Microsoft GPG key
+  ansible.builtin.apt_key:
+    url: https://packages.microsoft.com/keys/microsoft.asc
+    keyring: /etc/apt/trusted.gpg.d/microsoft.gpg
+
+- name: Ensuring Azure repo is enabled
   apt_repository:
-    repo: "deb http://us.archive.ubuntu.com/ubuntu {{ OS_DISTRO_RELEASE }} multiverse"
+    repo: deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ {{ OS_DISTRO_RELEASE }} main
     state: present
 
+# Manual update: https://help.ubuntu.com/stable/ubuntu-help/addremove-sources.html.en
+- name: Ensuring Ubuntu multiverse repo is enabled
+  apt_repository:
+    repo: deb http://us.archive.ubuntu.com/ubuntu {{ OS_DISTRO_RELEASE }} multiverse
+    state: present
+
+- name: Ensuring Terraform repo is enabled
+  apt_repository:
+    repo: deb [arch=amd64] https://apt.releases.hashicorp.com {{ OS_DISTRO_RELEASE }} main
+    state: present
+  
 - name: Update all packages to their latest version
   apt:
     name: "*"
@@ -16,6 +37,7 @@
   apt: pkg={{ item.packages }} state=present
   with_items:
     - packages:
+        - azure-cli
         - bash-completion
         - containerd.io
         - docker-ce
@@ -23,9 +45,12 @@
         - git
         - htop
         - mc
+        - redshift
+        - terraform
         - tig
         - vim
         - virtualbox
+        - wireshark
 
 - name: Install Snap Packages
   snap: name={{ item.names }} state=present
@@ -35,9 +60,14 @@
         - code
         - dbeaver-ce
         - postman
+        - skype
         - spotify
         - vlc
         - zoom-client
+
+- name: Install AWS CLI
+  pip:
+    name: awscli
 
 - name: Download kubectl
   get_url:
