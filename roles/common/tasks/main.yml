@@ -1,3 +1,8 @@
+- name: Add docker GPG key
+  ansible.builtin.apt_key:
+    url: https://download.docker.com/linux/ubuntu/gpg
+    keyring: /etc/apt/trusted.gpg.d/docker.gpg
+
 - name: Add hashicorp GPG key
   ansible.builtin.apt_key:
     url: https://apt.releases.hashicorp.com/gpg
@@ -7,6 +12,11 @@
   ansible.builtin.apt_key:
     url: https://packages.microsoft.com/keys/microsoft.asc
     keyring: /etc/apt/trusted.gpg.d/microsoft.gpg
+
+- name: Ensuring Docker repo is enabled
+  apt_repository:
+    repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ OS_DISTRO_RELEASE }} stable
+    state: present
 
 - name: Ensuring Azure repo is enabled
   apt_repository:
@@ -45,6 +55,7 @@
         - git
         - htop
         - mc
+        - python3-pip
         - redshift
         - terraform
         - tig
@@ -75,10 +86,10 @@
     dest: /usr/local/bin/kubectl
     mode: '775'
 
-# - name: Copy config files
-#   copy: src={{ item.src }} dest={{ item.dest }} owner=root group=root mode=0644
-#   with_items:
-#     - { src: 'files/home/user/.bash_aliases', dest: '/etc/profile.d/00-aliases.sh' }
-#     - { src: 'files/home/user/.bashrc', dest: '~/.bashrc' }
-#     - { src: 'files/home/user/.gitconfig', dest: '~/.gitconfig' }
-#     - { src: 'files/home/user/.vimrc', dest: '~/.vimrc' }
+- name: Copy config files
+  copy: src={{ item.src }} dest={{ item.dest }} owner=root group=root mode=0644
+  with_items:
+    - { src: 'files/home/user/.bash_aliases', dest: '/etc/profile.d/00-aliases.sh' }
+    - { src: 'files/home/user/.bashrc', dest: '~/.bashrc' }
+    - { src: 'files/home/user/.gitconfig', dest: '~/.gitconfig' }
+    - { src: 'files/home/user/.vimrc', dest: '~/.vimrc' }
