@@ -50,13 +50,16 @@
         - azure-cli
         - bash-completion
         - containerd.io
+        - chrome-gnome-shell
         - docker-ce
         - docker-ce-cli
         - git
+        - gnome-tweak-tool
         - htop
         - mc
         - python3-pip
         - redshift
+        - redshift-gtk
         - terraform
         - tig
         - vim
@@ -90,6 +93,6 @@
   copy: src={{ item.src }} dest={{ item.dest }} owner=root group=root mode=0644
   with_items:
     - { src: 'files/home/user/.bash_aliases', dest: '/etc/profile.d/00-aliases.sh' }
-    - { src: 'files/home/user/.bashrc', dest: '~/.bashrc' }
-    - { src: 'files/home/user/.gitconfig', dest: '~/.gitconfig' }
-    - { src: 'files/home/user/.vimrc', dest: '~/.vimrc' }
+    - { src: 'files/home/user/.bashrc', dest: '/home/{{ OS_USERNAME }}/.bashrc' }
+    - { src: 'files/home/user/.gitconfig', dest: '/home/{{ OS_USERNAME }}/.gitconfig' }
+    - { src: 'files/home/user/.vimrc', dest: '/home/{{ OS_USERNAME }}/.vimrc' }

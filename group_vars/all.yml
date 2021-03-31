@@ -1,6 +1,7 @@
 ---
 
 # OS
+OS_USERNAME: lukasz
 OS_DISTRO_RELEASE: focal
 
 # kubernetes
