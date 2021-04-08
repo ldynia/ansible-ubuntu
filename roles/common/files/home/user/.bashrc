@@ -119,4 +119,5 @@ fi
 if [ -e $HOME/.bash_aliases ]; then
     source $HOME/.bash_aliases
 fi
-source "$HOME/.cargo/env"
+
+# source "$HOME/.cargo/env"

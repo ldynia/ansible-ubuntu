@@ -1,0 +1,24 @@
+- name: Add Trivy GPG key
+  ansible.builtin.apt_key:
+    url: https://aquasecurity.github.io/trivy-repo/deb/public.key
+    keyring: /etc/apt/trusted.gpg.d/trivy.gpg
+
+- name: Ensuring Trivy repo is enabled
+  apt_repository:
+    repo: deb [arch=amd64] https://aquasecurity.github.io/trivy-repo/deb {{ OS_DISTRO_RELEASE }} main
+    state: present
+
+- name: Update all packages to their latest version
+  apt:
+    name: "*"
+    state: latest
+
+- name: Install Deb Packages
+  apt: pkg={{ item.packages }} state=present
+  with_items:
+    - packages:
+        - apt-transport-https
+        - gnupg
+        - lsb-release
+        - trivy
+

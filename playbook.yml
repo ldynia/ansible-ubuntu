@@ -3,5 +3,6 @@
   become: true
   roles:
     - common
+    - security
 
 

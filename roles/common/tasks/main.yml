@@ -33,7 +33,7 @@
   apt_repository:
     repo: deb [arch=amd64] https://apt.releases.hashicorp.com {{ OS_DISTRO_RELEASE }} main
     state: present
-  
+
 - name: Update all packages to their latest version
   apt:
     name: "*"
@@ -73,6 +73,7 @@
         - chromium
         - code
         - dbeaver-ce
+        - gimp
         - postman
         - skype
         - spotify
@@ -92,7 +93,7 @@
 - name: Copy config files
   copy: src={{ item.src }} dest={{ item.dest }} owner=root group=root mode=0644
   with_items:
-    - { src: 'files/home/user/.bash_aliases', dest: '/etc/profile.d/00-aliases.sh' }
+    - { src: 'files/home/user/.bash_aliases', dest: '/home/{{ OS_USERNAME }}/.bash_aliases' }
     - { src: 'files/home/user/.bashrc', dest: '/home/{{ OS_USERNAME }}/.bashrc' }
     - { src: 'files/home/user/.gitconfig', dest: '/home/{{ OS_USERNAME }}/.gitconfig' }
     - { src: 'files/home/user/.vimrc', dest: '/home/{{ OS_USERNAME }}/.vimrc' }
