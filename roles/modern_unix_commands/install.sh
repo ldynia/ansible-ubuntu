@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 
-# MODERN UNIX COMMANDS
-# This script is installation of commands listed in https://github.com/ibraheemdev/modern-unix
+# MODERN UNIX COMMANDS -script installs modern unix commands listed in https://github.com/ibraheemdev/modern-unix
 
 ARCHITECTURE=$(uname -m)
 if [ $(uname -m) == 'x86_64' ]; then
